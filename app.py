@@ -32,6 +32,11 @@ occupation = st.selectbox(
     encoders['occupation'].classes_
 )
 
+relationship = st.selectbox(
+    "Relationship",
+    encoders['relationship'].classes_
+)
+
 sex = st.selectbox(
     "Gender",
     encoders['sex'].classes_
@@ -74,6 +79,10 @@ input_data = pd.DataFrame({
 
     'occupation': [
         encoders['occupation'].transform([occupation])[0]
+    ],
+
+    'relationship': [
+        encoders['relationship'].transform([relationship])[0]
     ],
 
     'sex': [
