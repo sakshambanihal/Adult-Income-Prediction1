@@ -4,16 +4,14 @@ import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 
-# Load dataset
 df = pd.read_csv("adult.csv")
 
 # Replace missing values
 df.replace('?', np.nan, inplace=True)
 df.dropna(inplace=True)
 
-# Drop columns
 df.drop(columns=[
     'fnlwgt',
     'race',
@@ -21,10 +19,7 @@ df.drop(columns=[
     'education.num'
 ], inplace=True)
 
-# Store encoders
 encoders = {}
-
-# Encode categorical columns
 cat_cols = [
     'workclass',
     'education',
@@ -36,18 +31,13 @@ cat_cols = [
 ]
 
 for col in cat_cols:
-
     le = LabelEncoder()
-
     df[col] = le.fit_transform(df[col])
-
     encoders[col] = le
 
-# Features and target
 X = df.drop('income', axis=1)
 y = df['income']
 
-# Split
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -55,21 +45,19 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-# Scaling
 scaler = StandardScaler()
 
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# Random Forest
-model = RandomForestClassifier(
+model = GradientBoostingClassifier(
     n_estimators=100,
+    learning_rate=0.1,
     random_state=42
 )
 
 model.fit(X_train, y_train)
 
-# Save files
 joblib.dump(model, "model.pkl")
 joblib.dump(scaler, "scaler.pkl")
 joblib.dump(encoders, "encoders.pkl")
